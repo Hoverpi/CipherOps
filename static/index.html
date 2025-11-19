@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PepeTails</title>
+
+  <link rel="stylesheet" href="/static/css/hero.css">
+  <link rel="stylesheet" href="/static/css/all.min.css">
+  <link href="/static/css/Poppins.css" rel="stylesheet">
+
+</head>
+<body>
+
+  <!-- PATTERN BACKGROUND -->
+  <div class="page-bg" aria-hidden="true">
+    <div class="shape one"></div>
+    <div class="shape two"></div>
+  </div>
+
+  <!-- NAVBAR -->
+  <header class="navbar" role="banner">
+    <div class="nav-inner">
+      <div class="brand" role="img" aria-label="PepeTails logo">
+        <div class="logo">
+          <img src="/static/img/logo.png" alt="logo PepeTails">
+        </div>
+        <div class="name-sr">PepeTails</div>
+      </div>
+
+      <nav class="nav-actions" role="navigation" aria-label="Acciones de usuario">
+        <button class="btn login" type="button"><i class="fas fa-sign-in-alt" aria-hidden="true"></i> Log In</button>
+        <button class="btn register" type="button"><i class="fas fa-user-plus" aria-hidden="true"></i> Register</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT (centrado) -->
+  <main role="main">
+    <section class="hero" aria-labelledby="pepetails-title">
+      <h1 id="pepetails-title" class="title">PepeTails</h1>
+      <p class="subtitle">By <a href="https://github.com/Hoverpi/CipherOps" target="_blank">Hoverpi</a></p>
+    </section>
+  </main>
+
+  <script>
+    document.querySelector('.btn.login').addEventListener('click', ()=> {
+      window.location.href = '/login';
+    });
+    document.querySelector('.btn.register').addEventListener('click', ()=> {
+      window.location.href = '/register';
+    });
+  </script>
+
+</body>
+</html>

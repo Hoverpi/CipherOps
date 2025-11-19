@@ -1,41 +1,37 @@
-# Prerequisites
-*.d
+# Created by https://gitignore.org
+# Go.gitignore
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Linker files
-*.ilk
-
-# Debugger Files
-*.pdb
-
-# Compiled Dynamic libraries
+# If you prefer the allow list template instead of the deny list, see community template:
+# https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
+#
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
 *.so
 *.dylib
-*.dll
 
-# Fortran module files
-*.mod
-*.smod
+# Test binary, built with `go test -c`
+*.test
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
+# Code coverage profiles and other test artifacts
 *.out
-*.app
+coverage.*
+*.coverprofile
+profile.cov
 
-# debug information files
-*.dwo
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+# Go workspace file
+# go.work
+# go.work.sum
+go.*
+
+# env file
+.env
+
+# Editor/IDE
+.idea/
+.vscode/
+
