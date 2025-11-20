@@ -1,8 +1,7 @@
 package config
 
 import (
- "log"
- "os"
+    "os"
 )
 
 type Config struct {
@@ -15,10 +14,10 @@ type Config struct {
 
 func LoadConfig() Config {
  return Config{
-  DBUser:     getEnv("DB_USER", "admin"),
-  DBPassword: getEnv("DB_PASSWORD", "secret"),
-  DBName:     getEnv("DB_NAME", "demo"),
-  DBHost:     getEnv("DB_HOST", "localhost"),
+  DBUser:     getEnv("DB_USER", "postgres"),
+  DBPassword: getEnv("DB_PASSWORD", "password"),
+  DBName:     getEnv("DB_NAME", "PepeScale"),
+  DBHost:     getEnv("DB_HOST", "172.17.0.2"),
   DBPort:     getEnv("DB_PORT", "5432"),
  }
 }

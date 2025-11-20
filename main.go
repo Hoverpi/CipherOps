@@ -3,73 +3,17 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
-	"github.com/gin-gonic/gin"
 	// local imports
 	"CipherOps/utils"
-	"myapp/config"
-	"myapp/db"
-	"myapp/routes"
+	"CipherOps/config"
+	"CipherOps/db"
+	"CipherOps/routes"
 )
 
-// Middleware
-func ValidateSession() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		sessionCookie, err := ctx.Cookie("session")
-		if err != nil {
-			// ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			// 	"error": "missing session cookie",
-			// })
-			// return
-			ctx.Redirect(http.StatusSeeOther, "/login")
-            ctx.Abort()
-		}
-		log.Println("DEBUG: SessionCookie=",sessionCookie)
-		
-		ctx.Set("session", sessionCookie)
-
-		ctx.Next()
-	}
-}
-
-func getRegister(ctx *gin.Context) {
-	ctx.File("./static/register.html")
-}
-
-func panelHandler(ctx *gin.Context) {
-	sessionCookie := ctx.GetString("session")
-	log.Println("DEBUG: Handler session =", sessionCookie)
-
-	ctx.JSON(http.StatusOK, gin.H{
-		"message": "welcome to the protected panel",
-		"session": sessionCookie,
-	})
-}
-
 func main() {
-	// cfg := config.LoadConfig()
-	// dbConn := db.InitDB(cfg)
-	// r := routes.SetupRouter(dbConn)
-	// r.Run(":8080")
-
-	router := gin.Default()
-	router.Static("/static", "./static")
-
-	router.GET("/", func (ctx *gin.Context) {
-		ctx.File("./static/index.html")
-	})
-	router.GET("/login", func (ctx *gin.Context) {
-		ctx.File("./static/login.html")
-	})
-	router.GET("/register", func (ctx *gin.Context) {
-		ctx.File("./static/register.html")
-	})
-
-	protected := router.Group("/")
-	protected.Use(ValidateSession()) 
-	{
-		protected.GET("/panel", panelHandler)
-	}
+	cfg := config.LoadConfig()
+	dbConnection := db.InitDB(cfg)
+	router := routes.SetupRouter(dbConnection)
 
 	fmt.Println(firewall.Pr())
 
