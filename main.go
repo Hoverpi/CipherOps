@@ -6,7 +6,10 @@ import (
 	"net/http"
 	"github.com/gin-gonic/gin"
 	// local imports
-	"CipherOps/utils/firewall"
+	"CipherOps/utils"
+	"myapp/config"
+	"myapp/db"
+	"myapp/routes"
 )
 
 // Middleware
@@ -37,7 +40,6 @@ func panelHandler(ctx *gin.Context) {
 	sessionCookie := ctx.GetString("session")
 	log.Println("DEBUG: Handler session =", sessionCookie)
 
-	// Return something so the client doesn't hang
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "welcome to the protected panel",
 		"session": sessionCookie,
@@ -45,6 +47,11 @@ func panelHandler(ctx *gin.Context) {
 }
 
 func main() {
+	// cfg := config.LoadConfig()
+	// dbConn := db.InitDB(cfg)
+	// r := routes.SetupRouter(dbConn)
+	// r.Run(":8080")
+
 	router := gin.Default()
 	router.Static("/static", "./static")
 

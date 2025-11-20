@@ -1,13 +1,22 @@
-      *,
+/* reset */
+*,
 *:before,
 *:after{
     padding: 0;
     margin: 0;
     box-sizing: border-box;
 }
+
+/* page background */
 body{
     background-color: #080710;
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
+
+/* decorative shapes */
 .background{
     width: 430px;
     height: 520px;
@@ -15,30 +24,28 @@ body{
     transform: translate(-50%,-50%);
     left: 50%;
     top: 50%;
+    pointer-events: none;
 }
 .background .shape{
     height: 200px;
     width: 200px;
     position: absolute;
     border-radius: 50%;
+    filter: blur(12px);
+    opacity: 0.95;
 }
 .shape:first-child{
-    background: linear-gradient(
-        #1845ad,
-        #23a2f6
-    );
+    background: linear-gradient(#1845ad,#23a2f6);
     left: -80px;
     top: -80px;
 }
 .shape:last-child{
-    background: linear-gradient(
-        to right,
-        #ff512f,
-        #f09819
-    );
+    background: linear-gradient(to right,#ff512f,#f09819);
     right: -30px;
     bottom: -80px;
 }
+
+/* form card */
 form{
     width: 400px;
     min-height: 520px;
@@ -47,76 +54,139 @@ form{
     transform: translate(-50%,-50%);
     top: 50%;
     left: 50%;
-    border-radius: 10px;
+    border-radius: 5px;
     backdrop-filter: blur(10px);
-    border: 2px solid rgba(255,255,255,0.1);
+    -webkit-backdrop-filter: blur(10px);
+    border: 2px solid rgba(255,255,255,0.10);
     box-shadow: 0 0 40px rgba(8,7,16,0.6);
     padding: 50px 35px;
 }
+
+/* typography inside form */
 form *{
     font-family: 'Poppins',sans-serif;
     color: #ffffff;
     letter-spacing: 0.5px;
     outline: none;
     border: none;
+    box-sizing: border-box;
 }
 form h3{
     font-size: 32px;
-    font-weight: 500;
+    font-weight: 600;
     line-height: 42px;
     text-align: center;
+    margin-bottom: 4px;
 }
 
+/* inputs */
 label{
     display: block;
-    margin-top: 30px;
-    font-size: 16px;
-    font-weight: 500;
+    margin-top: 24px;
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.92);
 }
 input{
     display: block;
-    height: 50px;
+    height: 48px;
     width: 100%;
-    background-color: rgba(255,255,255,0.07);
-    border-radius: 3px;
-    padding: 0 10px;
+    background-color: rgba(255,255,255,0.06);
+    border-radius: 5px;
+    padding: 0 12px;
     margin-top: 8px;
     font-size: 14px;
-    font-weight: 300;
+    font-weight: 400;
+    color: #fff;
+    transition: background-color .12s ease, box-shadow .12s ease;
+}
+input:focus{
+    box-shadow: 0 6px 18px rgba(35,162,246,0.08);
+    background-color: rgba(255,255,255,0.075);
 }
 ::placeholder{
-    color: #e5e5e5;
+    color: rgba(229,229,229,0.6);
 }
-button{
-    margin-top: 50px;
-    width: 100%;
-    background-color: #ffffff;
-    color: #080710;
-    padding: 15px 0;
-    font-size: 18px;
-    font-weight: 600;
-    border-radius: 5px;
-    cursor: pointer;
-}
-.social{
-  margin-top: 30px;
-  display: flex;
-}
-.social div{
-  background: red;
-  width: 150px;
-  border-radius: 3px;
-  padding: 5px 10px 10px 5px;
-  background-color: rgba(255,255,255,0.27);
-  color: #eaf0fb;
+
+/* native submit button (full-width) */
+.btn.submit {
+  all: unset;
+  display: block;
+  margin-top: 40px;
+  width: 100%;
   text-align: center;
+  padding: 16px 0;
+  border-radius: 5px;
+  background: #fff;
+  color: #0b0b0b;
+  font-weight:700;
+  font-size:18px;
+  box-shadow: 0 12px 30px rgba(8,7,16,0.45), inset 0 -6px 18px rgba(0,0,0,0.06);
+  cursor:pointer;
+  position: relative;
+  z-index: 2;
 }
-.social div:hover{
-  background-color: rgba(255,255,255,0.47);
+
+
+/* ---------- Unified row & btn classes ---------- */
+
+/* container row used for linking to the other form (login <-> register) */
+.row {
+  margin-top: 18px;
+  display: flex;
+  justify-content: center;
 }
-.social .fb{
-  margin-left: 25px;
+
+/* unified .btn used for both login/register link-like buttons */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  min-width: 200px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 12px 32px rgba(8,7,16,0.48);
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+  justify-content: center;
 }
-.social i{
-  margin-right: 4px;
+
+/* icon inside the btn */
+.btn i {
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+  color: #fff;
+}
+
+/* subtle gradient sheen behind content using ::after */
+.btn::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  border-radius: 5px;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(24,69,173,0.10), rgba(35,162,246,0.10));
+}
+
+/* ensure button contents render above the pseudo background */
+.btn > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* responsive: make the .btn full width on small screens */
+@media (max-width: 480px) {
+  form { width: 92%; padding: 36px 20px; }
+  .background { display: none; } /* hide blobs on tiny screens */
+  .row { padding: 0 12px; }
+  .btn { width: 100%; min-width: 0; justify-content: center; }
 }

@@ -1,219 +1,275 @@
 :root{
-      --nav-height: 72px;
-      --accent-1: #1845ad;
-      --accent-2: #23a2f6;
-      --accent-3: #ff512f;
-      --accent-4: #f09819;
-      --glass: rgba(255,255,255,0.10);
-      --glass-strong: rgba(255,255,255,0.20);
-      --text: #ffffff;
-      --max-width: 1200px;
-    }
+  --nav-height: 72px;
+  --accent-1: #1845ad;
+  --accent-2: #23a2f6;
+  --accent-3: #ff512f;
+  --accent-4: #f09819;
+  --glass: rgba(255,255,255,0.10);
+  --glass-strong: rgba(255,255,255,0.20);
+  --text: #ffffff;
+  --muted: rgba(255,255,255,0.9);
+  --max-width: 1200px;
+}
 
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body{height:100%}
-    body{
-      font-family: 'Poppins', sans-serif;
-      background: #080710;
-      color:var(--text);
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      min-height:100vh;
-    }
+/* reset */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family: 'Poppins', sans-serif;
+  background: #080710;
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  min-height:100vh;
+  -webkit-font-feature-settings: "liga" 1;
+}
 
-    /* ---------- BACKGROUND PATTERN (circle-like) ---------- */
-    .page-bg{
-      position:fixed;
-      inset:0;
-      overflow:hidden;
-      z-index:0;
-      /* base subtle dotted-looking radial pattern */
-      background-image:
-        radial-gradient(circle at 10% 10%, rgba(255,255,255,0.02) 0 2px, transparent 3px),
-        radial-gradient(circle at 40% 30%, rgba(255,255,255,0.02) 0 2px, transparent 3px),
-        radial-gradient(circle at 70% 80%, rgba(255,255,255,0.02) 0 2px, transparent 3px);
-      background-size: 120px 120px, 160px 160px, 200px 200px;
-    }
+/* ---------- BACKGROUND PATTERN (circle-like) ---------- */
+.page-bg{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  z-index:0;
+  /* base subtle dotted-looking radial pattern */
+  background-image:
+    radial-gradient(circle at 10% 10%, rgba(255,255,255,0.02) 0 2px, transparent 3px),
+    radial-gradient(circle at 40% 30%, rgba(255,255,255,0.02) 0 2px, transparent 3px),
+    radial-gradient(circle at 70% 80%, rgba(255,255,255,0.02) 0 2px, transparent 3px);
+  background-size: 120px 120px, 160px 160px, 200px 200px;
+}
 
-    /* Large decorative blob-circles (like your shapes) */
-    .shape{
-      position:absolute;
-      width:380px;
-      height:380px;
-      border-radius:50%;
-      filter: blur(14px);
-      opacity:0.95;
-      transform-origin:center;
-      z-index:0;
-    }
-    .shape.one{
-      background: linear-gradient(135deg,var(--accent-1),var(--accent-2));
-      left:-140px;
-      top:-140px;
-    }
-    .shape.two{
-      background: linear-gradient(90deg,var(--accent-3),var(--accent-4));
-      right:-80px;
-      bottom:-160px;
-      width:420px;
-      height:420px;
-      opacity:0.9;
-    }
+/* Large decorative blob-circles */
+.shape{
+  position:absolute;
+  width:380px;
+  height:380px;
+  border-radius:50%;
+  filter: blur(14px);
+  opacity:0.95;
+  transform-origin:center;
+  z-index:0;
+}
+.shape.one{
+  background: linear-gradient(135deg,var(--accent-1),var(--accent-2));
+  left:-140px;
+  top:-140px;
+}
+.shape.two{
+  background: linear-gradient(90deg,var(--accent-3),var(--accent-4));
+  right:-80px;
+  bottom:-160px;
+  width:420px;
+  height:420px;
+  opacity:0.9;
+}
 
-    /* ---------- NAVBAR ---------- */
-    .navbar{
-      position:fixed;
-      top:0;
-      left:0;
-      right:0;
-      height:var(--nav-height);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:0 16px;
-      z-index:5;
-      backdrop-filter: blur(6px);
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-      box-shadow: 0 6px 18px rgba(8,7,16,0.35);
-    }
-    .nav-inner{
-      max-width:var(--max-width);
-      width:100%;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 12px;
-    }
+/* ---------- NAVBAR ---------- */
+.navbar{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  height:var(--nav-height);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 16px;
+  z-index:5;
+  backdrop-filter: blur(6px);
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 6px 18px rgba(8,7,16,0.35);
+}
+.nav-inner{
+  max-width:var(--max-width);
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+}
 
-    /* left: circle logo */
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-    }
-    .brand .logo{
-      width:48px;
-      height:48px;
-      border-radius:50%;
-      overflow:hidden;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      border: 2px solid rgba(255,255,255,0.12);
-      background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-      flex-shrink:0;
-    }
-    .brand .logo img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-    }
-    .brand .name-sr{
-      /* opcional: texto pequeño (oculto en narrow screens) */
-      font-weight:600;
-      font-size:14px;
-      color:var(--text);
-      opacity:0.95;
-      display:none;
-    }
+/* left: circle logo */
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.brand .logo{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  overflow:hidden;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border: 2px solid rgba(255,255,255,0.12);
+  background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  flex-shrink:0;
+}
+.brand .logo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.brand .name-sr{
+  /* optional small text (hidden on narrow screens) */
+  font-weight:600;
+  font-size:14px;
+  color:var(--text);
+  opacity:0.95;
+  display:none;
+}
 
-    /* right: actions */
-    .nav-actions{
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-    .btn{
-      font-weight:600;
-      padding:9px 14px;
-      border-radius:8px;
-      cursor:pointer;
-      border:0;
-      font-size:14px;
-      transition:all .18s ease;
-      box-shadow: 0 3px 10px rgba(8,7,16,0.35);
-    }
-    .btn.login{
-      background: transparent;
-      color:var(--text);
-      border: 1px solid rgba(255,255,255,0.08);
-      backdrop-filter: blur(4px);
-    }
-    .btn.register{
-      background: linear-gradient(90deg,var(--accent-1),var(--accent-2));
-      color:white;
-    }
-    .btn:hover{ transform: translateY(-2px); }
+/* right: actions */
+/* Make .btn behave like a real control even when it's an anchor */
+.nav-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
 
-    /* ---------- MAIN CENTER CONTENT ---------- */
-    main{
-      position:relative;
-      z-index:3;
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding-top: var(--nav-height); /* to avoid overlapping navbar */
-    }
-    .hero{
-      text-align:center;
-      padding: 40px 20px;
-      width:100%;
-    }
-    .hero .title{
-      font-size: clamp(32px, 6vw, 96px);
-      font-weight:700;
-      letter-spacing: 1px;
-      line-height: 0.95;
-      color: white;
-      text-shadow:
-         0 6px 30px rgba(8,7,16,0.7),
-         0 0 18px rgba(35,162,246,0.08);
-    }
-    .subtitle {
-      text-decoration: none;
-    }
-    .hero .subtitle{
-      margin-top:12px;
-      font-size: clamp(14px, 2.2vw, 20px);
-      font-weight:500;
-      color: rgba(255,255,255,0.9);
-      opacity:0.95;
-    }
+/* Base button styles for anchors and buttons in the nav */
+.btn{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight:600;
+  padding:9px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  border:0;
+  font-size:14px;
+  transition:all .18s ease, transform .12s ease;
+  box-shadow: 0 3px 10px rgba(8,7,16,0.35);
+  text-decoration: none;        /* remove underline for anchors */
+  -webkit-tap-highlight-color: transparent;
+}
 
-    /* small decorative centered glass box if needed */
-    .hero .glass{
-      margin:28px auto 0;
-      display:inline-block;
-      padding:12px 20px;
-      border-radius:12px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.06);
-      backdrop-filter: blur(6px);
-      font-weight:500;
-    }
+/* explicit states to avoid browser defaults */
+.nav-actions .btn,
+.nav-actions .btn:link,
+.nav-actions .btn:visited,
+.nav-actions .btn:active,
+.nav-actions .btn:hover {
+  text-decoration: none !important;
+}
 
-    /* Responsive adjustments */
-    @media (max-width: 720px){
-      .brand .name-sr{ display:none; } /* keep minimal */
-      .nav-inner{ padding:0 6px; }
-      .nav-actions{ gap:8px; }
-      .btn{ padding:8px 10px; font-size:13px; border-radius:10px; }
-      .shape{ filter: blur(12px); opacity:0.9; }
-    }
+/* Keep accessible focus ring, but styled to fit your theme */
+.nav-actions .btn:focus,
+.nav-actions .btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(35,162,246,0.12);
+  border-radius: 8px;
+}
 
-    @media (max-width: 480px){
-      .nav-inner{ align-items:center; gap:8px; }
-      /* stack actions vertically on tiny screens */
-      .nav-actions{
-        gap:6px;
-      }
-      /* If you want to stack login/register vertically, uncomment:
-      .nav-actions{ flex-direction:column; align-items:flex-end; }
-      */
-      .brand .logo{ width:42px; height:42px; }
-      .hero .title{ font-size: clamp(28px, 10vw, 56px); }
-      .hero .subtitle{ font-size: 14px; }
-    }
+/* individual button styles */
+.btn.login{
+  background: transparent;
+  color:var(--text);
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(4px);
+}
+.btn.register{
+  background: linear-gradient(90deg,var(--accent-1),var(--accent-2));
+  color:white;
+}
+.btn:hover{ transform: translateY(-2px); }
+
+/* ---------- MAIN CENTER CONTENT ---------- */
+main{
+  position:relative;
+  z-index:3;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding-top: var(--nav-height); /* to avoid overlapping navbar */
+}
+.hero{
+  text-align:center;
+  padding: 40px 20px;
+  width:100%;
+}
+.hero .title{
+  font-size: clamp(32px, 6vw, 96px);
+  font-weight:700;
+  letter-spacing: 1px;
+  line-height: 0.95;
+  color: white;
+  text-shadow:
+      0 6px 30px rgba(8,7,16,0.7),
+      0 0 18px rgba(35,162,246,0.08);
+}
+.hero .subtitle{
+  margin-top:12px;
+  font-size: clamp(14px, 2.2vw, 20px);
+  font-weight:500;
+  color: rgba(255,255,255,0.9);
+  opacity:0.95;
+}
+
+/* small decorative centered glass box if needed */
+.hero .glass{
+  margin:28px auto 0;
+  display:inline-block;
+  padding:12px 20px;
+  border-radius:12px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(6px);
+  font-weight:500;
+}
+
+/* LINK STYLE - strong specificity to override other libs */
+.hero .subtitle a,
+.hero .subtitle a:link,
+.hero .subtitle a:visited {
+  color: var(--accent-2);
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity .12s ease, color .12s ease;
+}
+
+/* hover / active */
+.hero .subtitle a:hover,
+.hero .subtitle a:active { 
+  text-decoration: underline;
+  opacity: 0.95;
+}
+
+/* focus style for link */
+.hero .subtitle a:focus,
+.hero .subtitle a:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(35,162,246,0.12);
+  border-radius: 6px;
+}
+
+/* ---------- small utilities ---------- */
+.hidden { display:none !important; }
+.center { text-align:center !important; }
+
+/* Responsive adjustments */
+@media (max-width: 720px){
+  .brand .name-sr{ display:none; } /* keep minimal */
+  .nav-inner{ padding:0 6px; }
+  .nav-actions{ gap:8px; }
+  .btn{ padding:8px 10px; font-size:13px; border-radius:10px; }
+  .shape{ filter: blur(12px); opacity:0.9; }
+}
+
+@media (max-width: 480px){
+  .nav-inner{ align-items:center; gap:8px; }
+  /* stack actions vertically on tiny screens */
+  .nav-actions{
+    gap:6px;
+  }
+  /* If you want to stack login/register vertically, uncomment:
+  .nav-actions{ flex-direction:column; align-items:flex-end; }
+  */
+  .brand .logo{ width:42px; height:42px; }
+  .hero .title{ font-size: clamp(28px, 10vw, 56px); }
+  .hero .subtitle{ font-size: 14px; }
+}
