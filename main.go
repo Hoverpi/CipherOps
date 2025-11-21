@@ -1,24 +1,24 @@
 package main
 
 import (
-	"fmt"
-	"log"
+	//"log"
 	// local imports
-	"CipherOps/utils"
-	"CipherOps/config"
-	"CipherOps/db"
-	"CipherOps/routes"
+	"CipherOps/automation"
+	//"CipherOps/config"
+	//"CipherOps/db"
+	//"CipherOps/routes"
 )
 
 func main() {
-	cfg := config.LoadConfig()
-	dbConnection := db.InitDB(cfg)
-	router := routes.SetupRouter(dbConnection)
+	// Automate
+	automate.SetupNecessaryPkgs()
 
-	fmt.Println(firewall.Pr())
+	//cfg := config.LoadConfig()
+	//dbConnection := db.InitDB(cfg)
+	//router := routes.SetupRouter(dbConnection)
 
-	log.Println("Server: http://localhost:8080")
-	if err := router.Run(":8080"); err != nil {
-		log.Fatalf("server failed: %v", err)
-	}
+	//log.Println("Server: http://localhost:8080")
+	//if err := router.Run(":8080"); err != nil {
+	//	log.Fatalf("server failed: %v", err)
+	//}
 }
