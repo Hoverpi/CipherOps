@@ -2,7 +2,6 @@ package utils
 
 import (
 	"bufio"
-	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -11,40 +10,6 @@ import (
 	"strings"
 	"time"
 )
-
-// --- Config / global vars ---
-var (
-	DefaultTimeout = 5 * time.Minute
-	DryRun         = false
-)
-
-// helper
-func runCmd(ctx context.Context, sudo bool, name string, args ...string) (string, error) {
-	if DryRun {
-		cmdLine := name + " " + strings.Join(args, " ")
-		if sudo {
-			cmdLine = "sudo " + cmdLine
-		}
-		return cmdLine, nil
-	}
-
-	if sudo && os.Geteuid() != 0 {
-		// intentamos con sudo
-		args = append([]string{name}, args...)
-		name = "sudo"
-	}
-	cmd := exec.CommandContext(ctx, name, args...)
-	var out bytes.Buffer
-	var stderr bytes.Buffer
-	cmd.Stdout = &out
-	cmd.Stderr = &stderr
-	err := cmd.Run()
-	outStr := strings.TrimSpace(out.String())
-	if err != nil {
-		return outStr, fmt.Errorf("%w: %s", err, strings.TrimSpace(stderr.String()))
-	}
-	return outStr, nil
-}
 
 // ----- Distro detection -----
 type DistroInfo struct {
@@ -117,30 +82,44 @@ type AptInstaller struct {}
 func (a *AptInstaller) Install(pkgs []string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), DefaultTimeout)
 	defer cancel()
-	// update
-	if _, err := runCmd(ctx, true, "apt-get", "update", "-y"); err != nil {
-		fmt.Printf("Warning: apt update failed: %v\n", err)
+
+	var output string
+	var err error
+	
+	// Update
+	if output, err = runCmd(ctx, true, "apt-get", "update", "-y"); err != nil {
+		fmt.Printf("Warning: apt update failed: %v\nOutput: %s\n", err, output)
 	}
+	fmt.Println(output)
+
 	args := append([]string{"install", "-y"}, pkgs...)
-	if _, err := runCmd(ctx, true, "apt-get", args...); err == nil {
-		return nil
+	if output, err = runCmd(ctx, true, "apt-get", args...); err != nil {
+		return fmt.Errorf("failed to install packages %v: %w\nOutput: %s", pkgs, err, output)
 	}
-	return fmt.Errorf("failed to install packages: %v", pkgs)
+	fmt.Printf("apt-get install output: %s\n", output)
+	return nil
 }
+
 func (a *AptInstaller) Remove(pkgs []string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), DefaultTimeout)
 	defer cancel()
+
+	var output string
+	var err error
+
 	args := append([]string{"remove", "-y"}, pkgs...)
-	if _, err := runCmd(ctx, true, "apt-get", args...); err == nil {
-		return nil
+	if output, err = runCmd(ctx, true, "apt-get", args...); err != nil {
+		return fmt.Errorf("failed to remove packages: %v\nOutput: %s", pkgs, output)
 	}
-	return fmt.Errorf("failed to remove packages: %v", pkgs)
+	fmt.Println(output)
+	return nil
 }
+
 func (a *AptInstaller) IsInstalled(pkg string) (bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-	_, err := runCmd(ctx, false, "dpkg", "-s", pkg)
-	if err != nil {
+
+	if _, err := runCmd(ctx, false, "dpkg", "-s", pkg); err != nil {
 		// dpkg -s returns an error if it is not installed
 		return false, nil
 	}
@@ -153,38 +132,48 @@ type DnfInstaller struct {}
 func (d *DnfInstaller) Install(pkgs []string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), DefaultTimeout)
 	defer cancel()
-	// update
-	if _, err := runCmd(ctx, true, "dnf", "update", "-y"); err != nil {
-		fmt.Printf("Warning: dnf update failed: %v\n", err)
+
+	var output string
+	var err error
+	
+	// Update
+	if output, err = runCmd(ctx, true, "dnf", "update", "-y"); err != nil {
+		fmt.Printf("Warning: dnf update failed: %v\nOutput: %s\n", err, output)
 	}
+
 	args := append([]string{"install", "-y"}, pkgs...)
-	// Attempt to install using dnf first
-	if _, err := runCmd(ctx, true, "dnf", args...); err == nil {
-		return nil
+	if output, err = runCmd(ctx, true, "dnf", args...); err != nil {
+		if output, err = runCmd(ctx, true, "yum", args...); err != nil {
+			return fmt.Errorf("failed to install packages: %v\nOutput: %s", pkgs, output)
+		}
 	}
-	// If dnf fails, fall back to yum
-	if _, err := runCmd(ctx, true, "yum", args...); err == nil {
-		return nil
-	}
-	return fmt.Errorf("failed to install packages: %v", pkgs)
+	fmt.Printf("dnf/yum install output: %s\n", output)
+	return nil
 }
+
 func (d *DnfInstaller) Remove(pkgs []string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), DefaultTimeout)
 	defer cancel()
+
+	var output string
+	var err error
+
 	args := append([]string{"remove", "-y"}, pkgs...)
-	if _, err := runCmd(ctx, true, "dnf", args...); err == nil {
-		return nil
+	if output, err = runCmd(ctx, true, "dnf", args...); err != nil {
+		if output, err = runCmd(ctx, true, "yum", args...); err != nil {
+			return fmt.Errorf("failed to remove packages: %v\nOutput: %s", pkgs, output)
+		}
 	}
-	if _, err := runCmd(ctx, true, "yum", args...); err == nil {
-		return nil
-	}
-	return fmt.Errorf("failed to remove packages: %v", pkgs)
+	fmt.Println(output)
+	return nil
 }
+
 func (d *DnfInstaller) IsInstalled(pkg string) (bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-	_, err := runCmd(ctx, false, "rpm", "-q", pkg)
-	if err != nil {
+
+	if _, err := runCmd(ctx, false, "rpm", "-q", pkg); err != nil {
+		// rpm returns an error if the package is not installed
 		return false, nil
 	}
 	return true, nil
@@ -196,30 +185,44 @@ type PacmanInstaller struct {}
 func (p *PacmanInstaller) Install(pkgs []string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), DefaultTimeout)
 	defer cancel()
-	// update
-	if _, err := runCmd(ctx, true, "pacman", "-Sy", "--noconfirm"); err != nil {
-		fmt.Printf("Warning: pacman update failed: %v\n", err)
+
+	var output string
+	var err error
+	
+		// Update
+	if output, err = runCmd(ctx, true, "pacman", "-Sy", "--noconfirm"); err != nil {
+		fmt.Printf("Warning: pacman update failed: %v\nOutput: %s\n", err, output)
 	}
+
 	args := append([]string{"-S", "--noconfirm"}, pkgs...)
-	if _, err := runCmd(ctx, true, "pacman", args...); err == nil {
-		return nil
+	if output, err = runCmd(ctx, true, "pacman", args...); err != nil {
+		return fmt.Errorf("failed to install packages: %v\nOutput: %s", pkgs, output)
 	}
-	return fmt.Errorf("failed to install packages: %v", pkgs)
+	fmt.Printf("pacman install output: %s\n", output)
+	return nil
 }
+
 func (p *PacmanInstaller) Remove(pkgs []string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), DefaultTimeout)
 	defer cancel()
+
+	var output string
+	var err error
+
 	args := append([]string{"-R", "--noconfirm"}, pkgs...)
-	if _, err := runCmd(ctx, true, "pacman", args...); err == nil {
-		return nil
+	if output, err = runCmd(ctx, true, "pacman", args...); err != nil {
+		return fmt.Errorf("failed to remove packages: %v\nOutput: %s", pkgs, output)
 	}
-	return fmt.Errorf("failed to remove packages: %v", pkgs)
+	fmt.Println(output)
+	return nil
 }
+
 func (p *PacmanInstaller) IsInstalled(pkg string) (bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-	_, err := runCmd(ctx, false, "pacman", "-Qi", pkg)
-	if err != nil {
+
+	if _, err := runCmd(ctx, false, "pacman", "-Qi", pkg); err != nil {
+		// pacman -Qi returns an error if the package is not installed
 		return false, nil
 	}
 	return true, nil
@@ -231,34 +234,49 @@ type ZypperInstaller struct{}
 func (z *ZypperInstaller) Install(pkgs []string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), DefaultTimeout)
 	defer cancel()
-	// update
-	if _, err := runCmd(ctx, true, "zypper", "update", "--non-interactive"); err != nil {
-		fmt.Printf("Warning: zypper update failed: %v\n", err)
+
+	var output string
+	var err error
+	
+	// Update
+	if output, err = runCmd(ctx, true, "zypper", "update", "--non-interactive"); err != nil {
+		fmt.Printf("Warning: zypper update failed: %v\nOutput: %s\n", err, output)
 	}
+
 	args := append([]string{"--non-interactive", "install"}, pkgs...)
-	if _, err := runCmd(ctx, true, "zypper", args...); err == nil {
-		return nil
+	if output, err = runCmd(ctx, true, "zypper", args...); err != nil {
+		return fmt.Errorf("failed to install packages: %v\nOutput: %s", pkgs, output)
 	}
-	return fmt.Errorf("failed to install packages: %v", pkgs)
+	fmt.Printf("zypper install output: %s\n", output)
+	return nil
 }
+
 func (z *ZypperInstaller) Remove(pkgs []string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), DefaultTimeout)
 	defer cancel()
+
+	var output string
+	var err error
+
 	args := append([]string{"--non-interactive", "remove"}, pkgs...)
-	if _, err := runCmd(ctx, true, "zypper", args...); err != nil {
-		return nil
+	if output, err = runCmd(ctx, true, "zypper", args...); err != nil {
+		return fmt.Errorf("failed to remove packages: %v\nOutput: %s", pkgs, output)
 	}
-	return fmt.Errorf("failed to remove packages: %v", pkgs)
+	fmt.Println(output)
+	return nil
 }
+
 func (z *ZypperInstaller) IsInstalled(pkg string) (bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-	_, err := runCmd(ctx, false, "rpm", "-q", pkg)
-	if err != nil {
+
+	if _, err := runCmd(ctx, false, "rpm", "-q", pkg); err != nil {
+		// rpm returns an error if the package is not installed
 		return false, nil
 	}
 	return true, nil
 }
+
 
 // --- Generic fallback ---
 type GenericShellInstaller struct{}
